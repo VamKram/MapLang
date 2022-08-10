@@ -29,7 +29,18 @@ export class Parser {
     return res;
   }
 
-  factor() {
+  /*
+  * expr -> term((PLUS|MINUS) term)
+  * term -> factor (MUL | DIV) factor
+  * factor -> INT | FLOAT
+  *        -> (PLUS | MINUS) factor -1 +1
+  *        -> LPAREN expr RPAREN
+  *
+  *
+  *
+  * */
+
+  factor = () => {
     const res = new ParserResource()
     const tok = this.curTok;
     if (([DATATYPE.INT, DATATYPE.FLOAT]).includes(tok?.type as DATATYPE)) {
@@ -57,7 +68,7 @@ export class Parser {
     return res.fail(new InvalidSyntax(this.curTok?.p_start as Position, this.curTok?.p_end as Position, "expected int or float"))
   }
 
-  term() {
+  term = () => {
     return this.binOp(this.factor, [SIGN.MULTI, SIGN.DIV])
   }
 
@@ -67,13 +78,14 @@ export class Parser {
     return this.binOp(this.term, [SIGN.PLUS, SIGN.MINUS])
   }
 
-  private binOp(factor: () => (ParserResource | undefined), divs: SIGN[]) {
+  private binOp(func: () => (ParserResource | undefined), divs: SIGN[]) {
     const res = new ParserResource();
-    let l = res.register(factor())
-    while (this.curTok && this.curTok.type  in divs) {
+    let l = res.register(func())
+
+    while (divs.includes(this.curTok?.type as any)) {
       const opTok = this.curTok;
       res.register(this.adv())
-      const r = res.register(factor())
+      const r = res.register(func())
       l = new BinOpNode(l, opTok as Token, r);
     }
     return res.suc(l);

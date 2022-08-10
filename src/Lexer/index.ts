@@ -66,7 +66,7 @@ export default class Lexer implements LexerImpl {
   private makeNumber() {
     let numberStr = '',
       dot = 0
-    while (this.cur !== null && /\d+\./g.test(this.cur)) {
+    while (this.cur !== null && /\d+(\.)?/g.test(this.cur)) {
       if (this.cur === '.') {
         if (dot === 1) {
           break
@@ -76,8 +76,8 @@ export default class Lexer implements LexerImpl {
       } else {
         numberStr += this.cur
       }
+      this.adv();
     }
-    this.adv();
     if (dot === 0) {
       return new Token(DATATYPE.INT, Number(numberStr))
     }

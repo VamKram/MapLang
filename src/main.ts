@@ -5,6 +5,8 @@ export function exec(fn: string, text: string) {
   const tokens = lexer.makeTokens();
   const parser = new Parser(tokens)
   const ast = parser.parse();
+  // eslint-disable-next-line no-console
+  console.log("ast:", JSON.stringify(ast, null, 2));
   return ast
 }
 
