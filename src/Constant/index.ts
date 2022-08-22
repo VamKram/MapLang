@@ -26,6 +26,11 @@ export const SIGN_MAP = {
   DIV: '\\',
 }
 
+export enum NodeHandleType{
+  NUMBER = "NUMBER",
+  OPERATOR = "OPERATOR"
+}
+
 
 
 

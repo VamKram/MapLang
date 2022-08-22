@@ -65,7 +65,8 @@ export default class Lexer implements LexerImpl {
 
   private makeNumber() {
     let numberStr = '',
-      dot = 0
+      dot = 0;
+      const start = this.pos.clone()
     while (this.cur !== null && /\d+(\.)?/g.test(this.cur)) {
       if (this.cur === '.') {
         if (dot === 1) {
@@ -79,8 +80,8 @@ export default class Lexer implements LexerImpl {
       this.adv();
     }
     if (dot === 0) {
-      return new Token(DATATYPE.INT, Number(numberStr))
+      return new Token(DATATYPE.INT, Number(numberStr), start, this.pos)
     }
-    return new Token(DATATYPE.FLOAT, Number(numberStr))
+    return new Token(DATATYPE.FLOAT, Number(numberStr), start, this.pos)
   }
 }
